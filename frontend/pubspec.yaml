@@ -1,0 +1,27 @@
+name: frontend
+description: A Flutter app for smarter food consumption.
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  numberpicker: ^2.1.2
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/logo.png
+    - assets/female.png
+    - assets/male.png
+    - assets/other.png
+
