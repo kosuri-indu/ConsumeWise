@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/views/pages/splash_screen.dart';
+import 'package:frontend/widget_tree.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,8 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: const SplashScreen(), // Start with Splash Screen
+      home: WidgetTree(), // Start with Splash Screen
     );
   }
 }
-
