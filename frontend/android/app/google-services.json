@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "653857258907",
+    "project_id": "consumewise-61e30",
+    "storage_bucket": "consumewise-61e30.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653857258907:android:8a599e602a4fa4b461353e",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "653857258907-1p5bc119ahf6qm7dgpiandablqi86d8h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqxRfEkQiUjoO9Os1MKuQuchid3BmawvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "653857258907-1p5bc119ahf6qm7dgpiandablqi86d8h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "653857258907-f1kt9i59kgvpe7gkr737jc5irck5hh1c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.frontend"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
