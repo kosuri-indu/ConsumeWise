@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:numberpicker/numberpicker.dart';
-import 'name.dart';
-// 🎯 Weight Selection Page
-class WeightSelectionScreen extends StatefulWidget {
+import 'package:frontend/views/pages/gender_page.dart';
+
+class NamePage extends StatefulWidget {
   @override
-  _WeightSelectionScreenState createState() => _WeightSelectionScreenState();
+  _NamePageState createState() => _NamePageState();
 }
 
-class _WeightSelectionScreenState extends State<WeightSelectionScreen> {
-  int _currentWeight = 60;
+class _NamePageState extends State<NamePage> {
+  TextEditingController _nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,28 +17,30 @@ class _WeightSelectionScreenState extends State<WeightSelectionScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("What’s your Weight?", 
+            Text("What should we call you?",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)
             ),
             SizedBox(height: 20),
-            NumberPicker(
-              value: _currentWeight,
-              minValue: 30,
-              maxValue: 120,
-              selectedTextStyle: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.blue),
-              textStyle: TextStyle(fontSize: 22, color: Colors.grey),
-              onChanged: (value) => setState(() => _currentWeight = value),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              child: TextField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: "Your Name",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NameFillingScreen()),
+                  MaterialPageRoute(builder: (context) => GenderPage()),
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.orange,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
               ),
@@ -51,3 +52,4 @@ class _WeightSelectionScreenState extends State<WeightSelectionScreen> {
     );
   }
 }
+

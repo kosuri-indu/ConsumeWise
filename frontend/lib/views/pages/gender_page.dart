@@ -1,78 +1,12 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: NameFillingScreen(),
-    );
-  }
-}
-
-// 🎯 Name Filling Page
-class NameFillingScreen extends StatefulWidget {
-  @override
-  _NameFillingScreenState createState() => _NameFillingScreenState();
-}
-
-class _NameFillingScreenState extends State<NameFillingScreen> {
-  TextEditingController _nameController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("What should we call you?",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: TextField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: "Your Name",
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => GenderSelectionScreen()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-              ),
-              child: Text("Continue", style: TextStyle(fontSize: 18, color: Colors.white)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
+import 'package:frontend/views/pages/profile_page.dart';
 // 🎯 Gender Selection Page
-class GenderSelectionScreen extends StatefulWidget {
+class GenderPage extends StatefulWidget {
   @override
-  _GenderSelectionScreenState createState() => _GenderSelectionScreenState();
+  _GenderPageState createState() => _GenderPageState();
 }
 
-class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
+class _GenderPageState extends State<GenderPage> {
   String? _selectedGender;
 
   void _selectGender(String gender) {
@@ -102,7 +36,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                   ? () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ProfileScreen()),
+                        MaterialPageRoute(builder: (context) => ProfilePage()),
                       );
                     }
                   : null,
@@ -153,20 +87,6 @@ class GenderOption extends StatelessWidget {
               Icon(Icons.radio_button_unchecked, color: Colors.grey),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// 🎯 Profile Screen (Final Page)
-class ProfileScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Text("Welcome to Your Profile!",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
       ),
     );
   }

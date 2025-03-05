@@ -1,25 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
-import 'weight.dart';
-void main() {
-  runApp(AgePickerApp());
-}
+import 'weight_page.dart';
 
-class AgePickerApp extends StatelessWidget {
+class AgePage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: AgeSelectionScreen(),
-    );
-  }
+  _AgePageState createState() => _AgePageState();
 }
 
-class AgeSelectionScreen extends StatefulWidget {
-  @override
-  _AgeSelectionScreenState createState() => _AgeSelectionScreenState();
-}
-
-class _AgeSelectionScreenState extends State<AgeSelectionScreen> {
+class _AgePageState extends State<AgePage> {
   int _currentAge = 19;
 
   @override
@@ -48,7 +36,7 @@ class _AgeSelectionScreenState extends State<AgeSelectionScreen> {
                 print("Selected Age: $_currentAge");
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => WeightSelectionScreen()),
+                  MaterialPageRoute(builder: (context) => WeightPage()),
                 );
               },
               style: ElevatedButton.styleFrom(

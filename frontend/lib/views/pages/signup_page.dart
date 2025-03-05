@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'ag_selection.dart';
+import 'package:frontend/views/pages/age_page.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -50,7 +49,7 @@ class SignUpPage extends StatelessWidget {
                 // Navigate to Home Page after Sign Up
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => AgePickerApp()),
+                  MaterialPageRoute(builder: (context) => AgePage()),
                 );
               },
               style: ElevatedButton.styleFrom(
