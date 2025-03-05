@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/views/pages/profile_page.dart';
+import 'package:frontend/views/pages/home_page.dart';
+
 // 🎯 Gender Selection Page
 class GenderPage extends StatefulWidget {
   @override
@@ -19,36 +20,81 @@ class _GenderPageState extends State<GenderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("What’s your gender?",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)
+      body: Column(
+        children: [
+          SizedBox(height: 50),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                Text("4 of 4",
+                    style: TextStyle(fontSize: 16, color: Colors.grey)),
+              ],
             ),
-            SizedBox(height: 20),
-            GenderOption("Female", "assets/female.png", _selectedGender == "Female", () => _selectGender("Female")),
-            GenderOption("Male", "assets/male.png", _selectedGender == "Male", () => _selectGender("Male")),
-            GenderOption("Other", "assets/other.png", _selectedGender == "Other", () => _selectGender("Other")),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _selectedGender != null
-                  ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ProfilePage()),
-                      );
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-              ),
-              child: Text("Finish", style: TextStyle(fontSize: 18, color: Colors.white)),
+          ),
+          SizedBox(height: 140),
+          Center(
+            child: Column(
+              children: [
+                Text("What’s your gender?",
+                    style:
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                SizedBox(height: 20),
+                GenderOption("Female", "assets/female.png",
+                    _selectedGender == "Female", () => _selectGender("Female")),
+                GenderOption("Male", "assets/male.png",
+                    _selectedGender == "Male", () => _selectGender("Male")),
+                GenderOption("Other", "assets/other.png",
+                    _selectedGender == "Other", () => _selectGender("Other")),
+                SizedBox(height: 20),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 30),
+                  width: double.infinity,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color:
+                        _selectedGender != null ? Colors.orange : Colors.grey,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: TextButton(
+                    onPressed: _selectedGender != null
+                        ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()),
+                            );
+                          }
+                        : null,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Finish",
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                        SizedBox(width: 10),
+                        Icon(Icons.radio_button_checked, color: Colors.white),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

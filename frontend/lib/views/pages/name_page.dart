@@ -13,43 +13,92 @@ class _NamePageState extends State<NamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("What should we call you?",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              child: TextField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: "Your Name",
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    Text("3 of 4",
+                        style: TextStyle(color: Colors.grey, fontSize: 16)),
+                  ],
                 ),
-              ),
+                SizedBox(height: 40),
+                Center(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 120),
+                      Image.asset(
+                        'assets/name.png', // Updated to use the provided image
+                        height: 180, // Adjust size as needed
+                      ),
+                      SizedBox(height: 100),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: TextField(
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                            labelText: "Your Name",
+                            labelStyle: TextStyle(color: Colors.grey),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.orange),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => GenderPage()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 60, vertical: 14),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Continue",
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                            SizedBox(width: 10),
+                            Icon(Icons.brightness_1,
+                                color: Colors.white, size: 14),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => GenderPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-              ),
-              child: Text("Continue", style: TextStyle(fontSize: 18, color: Colors.white)),
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
-
