@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
 import 'package:frontend/data/colors.dart';
 import 'name_page.dart';
 
@@ -11,6 +13,32 @@ class _WeightPageState extends State<WeightPage> {
   double _currentWeight = 62; // Default weight
   bool isKg = true; // Default unit
 
+  // Function to save weight to Firebase
+  Future<void> _saveWeightToFirebase() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser; // Get logged-in user
+      if (user != null) {
+        Map<String, dynamic> data = {
+          'weight': _currentWeight,
+          'unit': isKg ? 'Kg' : 'Lbs',
+        };
+
+        print("Saving to Firestore: $data"); // Debug print
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(data, SetOptions(merge: true));
+
+        print("Weight saved successfully!");
+      } else {
+        print("No user signed in!");
+      }
+    } catch (e) {
+      print("Error saving weight: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +47,6 @@ class _WeightPageState extends State<WeightPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Header with Back Button & Step Indicator
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
@@ -36,10 +63,7 @@ class _WeightPageState extends State<WeightPage> {
                 ],
               ),
             ),
-
             SizedBox(height: 30),
-
-            // Title
             Text(
               "What’s your current\nweight right now?",
               textAlign: TextAlign.center,
@@ -49,10 +73,7 @@ class _WeightPageState extends State<WeightPage> {
                 color: Colors.white,
               ),
             ),
-
             SizedBox(height: 70),
-
-            // KG / LBS Selection
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -95,10 +116,7 @@ class _WeightPageState extends State<WeightPage> {
                 ),
               ],
             ),
-
             SizedBox(height: 50),
-
-            // Highlighted Center Weight
             Text(
               "${_currentWeight.round()} ${isKg ? "Kg" : "Lbs"}",
               style: TextStyle(
@@ -108,8 +126,6 @@ class _WeightPageState extends State<WeightPage> {
               ),
             ),
             SizedBox(height: 50),
-
-            // Custom Horizontal Number Picker with Center Selection
             Expanded(
               child: Center(
                 child: Container(
@@ -125,6 +141,8 @@ class _WeightPageState extends State<WeightPage> {
                         onTap: () {
                           setState(() {
                             _currentWeight = weight.toDouble();
+                            print(
+                                "Updated weight: $_currentWeight"); // Debug print
                           });
                         },
                         child: AnimatedContainer(
@@ -164,13 +182,13 @@ class _WeightPageState extends State<WeightPage> {
                 ),
               ),
             ),
-
-            // Continue Button at Bottom
             Padding(
               padding: const EdgeInsets.only(bottom: 30),
               child: GestureDetector(
-                onTap: () {
-                  print("Selected Weight: $_currentWeight");
+                onTap: () async {
+                  print(
+                      "Current weight before saving: $_currentWeight"); // Debug print
+                  await _saveWeightToFirebase();
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => NamePage()),

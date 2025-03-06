@@ -1,9 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'signup_page.dart';
 import 'home_page.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
+
+  @override
+  _SignInPageState createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  Future<void> _signIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,25 +46,15 @@ class SignInPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Angled Header Background
             Container(
               height: 180,
               decoration: const BoxDecoration(
-                color: Color(0xFFCDE26E), // Light green background
+                color: Color(0xFFCDE26E),
                 borderRadius: BorderRadius.only(
                   bottomRight: Radius.circular(50),
                 ),
               ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                child: Align(
-                  alignment: Alignment.topRight,
-                ),
-              ),
             ),
-
-            // Sign-In Form
             Padding(
               padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
               child: Column(
@@ -46,84 +70,60 @@ class SignInPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 100),
-
-                  // Email Input
-                  const Text(
-                    'Email',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                  ),
+                  const Text('Email', style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 8),
                   TextField(
+                    controller: _emailController,
                     decoration: InputDecoration(
                       hintText: 'Enter Email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.black),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 15),
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Password Input
-                  const Text(
-                    'Password',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                  ),
+                  const Text('Password', style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 8),
                   TextField(
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'Enter Password',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.black),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 15),
                     ),
                   ),
                   const SizedBox(height: 40),
-
-                  // Sign-In Button
                   Center(
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                        );
-                      },
+                      onTap: _isLoading ? null : _signIn,
                       child: Container(
                         width: 250,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFCDE26E),
+                          color: _isLoading
+                              ? Colors.grey
+                              : const Color(0xFFCDE26E),
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              "Sign In",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 10),
-                            Icon(Icons.brightness_2,
-                                color: Colors.white, size: 20),
-                          ],
+                        child: Center(
+                          child: _isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white)
+                              : const Text(
+                                  "Sign In",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
-                  // Sign-Up Link
                   Center(
                     child: TextButton(
                       onPressed: () {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:frontend/views/pages/gender_page.dart';
 
 class NamePage extends StatefulWidget {
@@ -8,6 +10,20 @@ class NamePage extends StatefulWidget {
 
 class _NamePageState extends State<NamePage> {
   TextEditingController _nameController = TextEditingController();
+
+  Future<void> _saveNameToFirestore() async {
+    User? user = FirebaseAuth.instance.currentUser; // Get logged-in user
+    if (user != null && _nameController.text.isNotEmpty) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set(
+        {'name': _nameController.text},
+        SetOptions(merge: true), // Merge in case the user doc exists
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => GenderPage()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +53,7 @@ class _NamePageState extends State<NamePage> {
                   child: Column(
                     children: [
                       SizedBox(height: 120),
-                      Image.asset(
-                        'assets/name.png', // Updated to use the provided image
-                        height: 180, // Adjust size as needed
-                      ),
+                      Image.asset('assets/name.png', height: 180),
                       SizedBox(height: 100),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -62,13 +75,7 @@ class _NamePageState extends State<NamePage> {
                       ),
                       SizedBox(height: 30),
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => GenderPage()),
-                          );
-                        },
+                        onPressed: _saveNameToFirestore,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange,
                           shape: RoundedRectangleBorder(
@@ -80,11 +87,9 @@ class _NamePageState extends State<NamePage> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              "Continue",
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.white),
-                            ),
+                            Text("Continue",
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white)),
                             SizedBox(width: 10),
                             Icon(Icons.brightness_1,
                                 color: Colors.white, size: 14),

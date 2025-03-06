@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:frontend/views/pages/home_page.dart';
 
-// 🎯 Gender Selection Page
 class GenderPage extends StatefulWidget {
   @override
   _GenderPageState createState() => _GenderPageState();
@@ -14,6 +15,20 @@ class _GenderPageState extends State<GenderPage> {
     setState(() {
       _selectedGender = gender;
     });
+  }
+
+  Future<void> _saveGenderToFirestore() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && _selectedGender != null) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set(
+        {'gender': _selectedGender},
+        SetOptions(merge: true),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    }
   }
 
   @override
@@ -69,15 +84,8 @@ class _GenderPageState extends State<GenderPage> {
                     ],
                   ),
                   child: TextButton(
-                    onPressed: _selectedGender != null
-                        ? () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()),
-                            );
-                          }
-                        : null,
+                    onPressed:
+                        _selectedGender != null ? _saveGenderToFirestore : null,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -127,10 +135,12 @@ class GenderOption extends StatelessWidget {
             SizedBox(width: 10),
             Text(label, style: TextStyle(fontSize: 18)),
             Spacer(),
-            if (isSelected)
-              Icon(Icons.radio_button_checked, color: Colors.orange)
-            else
-              Icon(Icons.radio_button_unchecked, color: Colors.grey),
+            Icon(
+              isSelected
+                  ? Icons.radio_button_checked
+                  : Icons.radio_button_unchecked,
+              color: isSelected ? Colors.orange : Colors.grey,
+            ),
           ],
         ),
       ),

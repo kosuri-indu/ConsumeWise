@@ -1,8 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:frontend/views/pages/age_page.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
+
+  @override
+  _SignUpPageState createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  Future<void> _signUp() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => AgePage()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,27 +49,17 @@ class SignUpPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Angled Header Background
             Container(
               height: 180,
               decoration: const BoxDecoration(
-                color: Color(0xFFCDE26E), // Light green background
+                color: Color(0xFFCDE26E),
                 borderRadius: BorderRadius.only(
                   bottomRight: Radius.circular(50),
                 ),
               ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                child: Align(
-                  alignment: Alignment.topRight,
-                ),
-              ),
             ),
-
-            // Sign-Up Form
             Padding(
-              padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -39,109 +67,78 @@ class SignUpPage extends StatelessWidget {
                   const Text(
                     'Sign Up',
                     style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
                   ),
                   const SizedBox(height: 40),
-
-                  // Full Name Input
                   const Text(
                     'Full Name',
                     style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
                   const SizedBox(height: 8),
                   TextField(
+                    controller: _nameController,
                     decoration: InputDecoration(
                       hintText: 'Enter Full Name',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.black),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 15),
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Email Input
-                  const Text(
-                    'Email',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                  ),
+                  const Text('Email',
+                      style: TextStyle(fontSize: 16, color: Colors.black)),
                   const SizedBox(height: 8),
                   TextField(
+                    controller: _emailController,
                     decoration: InputDecoration(
                       hintText: 'Enter Email',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.black),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 15),
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Password Input
-                  const Text(
-                    'Password',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                  ),
+                  const Text('Password',
+                      style: TextStyle(fontSize: 16, color: Colors.black)),
                   const SizedBox(height: 8),
                   TextField(
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'Enter Password',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.black),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 15),
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                   const SizedBox(height: 40),
-
-                  // Sign-Up Button
                   Center(
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => AgePage()),
-                        );
-                      },
+                      onTap: _isLoading ? null : _signUp,
                       child: Container(
                         width: 250,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFCDE26E),
+                          color: _isLoading
+                              ? Colors.grey
+                              : const Color(0xFFCDE26E),
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text(
-                              "Sign Up",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(width: 10),
-                            Icon(Icons.brightness_2,
-                                color: Colors.white, size: 20),
-                          ],
+                        child: Center(
+                          child: _isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white)
+                              : const Text(
+                                  "Sign Up",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
-                  // Sign-In Link
                   Center(
                     child: TextButton(
                       onPressed: () {
@@ -150,10 +147,9 @@ class SignUpPage extends StatelessWidget {
                       child: const Text(
                         "Already have an account? Sign In",
                         style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey,
-                          decoration: TextDecoration.underline,
-                        ),
+                            fontSize: 16,
+                            color: Colors.grey,
+                            decoration: TextDecoration.underline),
                       ),
                     ),
                   ),
