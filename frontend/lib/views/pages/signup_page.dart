@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore Import
 import 'package:frontend/views/pages/age_page.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -11,7 +12,9 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final TextEditingController _nameController = TextEditingController();
+  final FirebaseFirestore _firestore =
+      FirebaseFirestore.instance; // Firestore Instance
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -22,18 +25,31 @@ class _SignUpPageState extends State<SignUpPage> {
     });
 
     try {
-      await _auth.createUserWithEmailAndPassword(
+      // Create user with Firebase Auth
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => AgePage()),
-      );
+      User? user = userCredential.user;
+      if (user != null) {
+        // Store user data in Firestore under users/{uid}
+        await _firestore.collection('users').doc(user.uid).set({
+          'uid': user.uid,
+          'email': _emailController.text.trim(),
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
+        // Navigate to next page after successful signup
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AgePage()),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
+        SnackBar(content: Text("Error: ${e.toString()}")),
       );
     }
 
@@ -72,20 +88,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         color: Colors.black),
                   ),
                   const SizedBox(height: 40),
-                  const Text(
-                    'Full Name',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Full Name',
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
                   const Text('Email',
                       style: TextStyle(fontSize: 16, color: Colors.black)),
                   const SizedBox(height: 8),

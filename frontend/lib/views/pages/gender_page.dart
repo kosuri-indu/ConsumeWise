@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:frontend/views/pages/home_page.dart';
+import 'package:frontend/views/pages/chronic_page.dart';
 
 class GenderPage extends StatefulWidget {
   @override
@@ -26,7 +26,7 @@ class _GenderPageState extends State<GenderPage> {
       );
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => ChronicPage()),
       );
     }
   }
@@ -90,7 +90,7 @@ class _GenderPageState extends State<GenderPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Finish",
+                          "Continue",
                           style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                         SizedBox(width: 10),
