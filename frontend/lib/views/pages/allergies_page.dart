@@ -23,6 +23,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
     "Wheat",
     "Sesame",
     "Mustard",
+    "None",
   ];
 
   void saveToFirebase() async {

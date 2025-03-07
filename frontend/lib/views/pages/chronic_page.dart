@@ -21,7 +21,8 @@ class _ChronicPageState extends State<ChronicPage> {
     "Kidney Disease",
     "Thyroid Disorders",
     "GERD",
-    "Autoimmune Disorders"
+    "Autoimmune Disorders",
+    "None",
   ];
 
   List<String> selectedConditions = [];
