@@ -18,9 +18,12 @@ dependencies:
   firebase_core_web: ^2.21.0
   google_mlkit_text_recognition: ^0.14.0
   camera: ^0.10.5+2
+  image_picker: ^1.0.7
+  image_cropper: ^9.0.0
   # flutter_tesseract_ocr: ^0.3.4
   flutter_svg: ^2.0.10+1
   syncfusion_flutter_sliders: ^24.1.46
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -36,3 +39,4 @@ flutter:
     - assets/male.png
     - assets/name.png
     - assets/other.png
+    - assets/.env

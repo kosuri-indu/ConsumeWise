@@ -1,25 +1,12 @@
-from flask import Flask, request, jsonify
-import requests
-import cv2
-import numpy as np
-from pyzbar.pyzbar import decode
-import io
-from PIL import Image
+from flask import Flask, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS
 
-@app.route('/process_image', methods=['POST'])
-def process_image():
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image provided'}), 400
-
-    image_file = request.files['image']
-    image = Image.open(image_file.stream)
-    # Process the image (e.g., decode barcode)
-    decoded_objects = decode(image)
-    result = [{'type': obj.type, 'data': obj.data.decode('utf-8')} for obj in decoded_objects]
-
-    return jsonify({'decoded_objects': result})
+@app.route('/api/data', methods=['GET'])
+def get_data():
+    return jsonify({"message": "Hello from Flask", "data": [1, 2, 3, 4, 5]})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

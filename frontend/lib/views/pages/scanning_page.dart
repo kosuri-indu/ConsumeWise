@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'dart:async';
+import 'dart:io';
+import 'analysis_page.dart';
 
 class ScanningPage extends StatefulWidget {
   @override
@@ -11,9 +13,7 @@ class ScanningPage extends StatefulWidget {
 class _ScanningPageState extends State<ScanningPage>
     with SingleTickerProviderStateMixin {
   CameraController? _cameraController;
-  bool _isCameraInitialized = false;
   bool _isScanning = false;
-  String _scannedText = "Scan food label to extract details";
   late AnimationController _animationController;
   late Animation<double> _animation;
 
@@ -21,48 +21,67 @@ class _ScanningPageState extends State<ScanningPage>
   void initState() {
     super.initState();
     _initializeCamera();
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 2))
-          ..repeat(reverse: true);
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    )..repeat(reverse: true);
     _animation = Tween<double>(begin: 0, end: 1).animate(_animationController);
   }
 
   Future<void> _initializeCamera() async {
-    try {
-      final cameras = await availableCameras();
-      if (cameras.isNotEmpty) {
-        _cameraController = CameraController(
-          cameras.first,
-          ResolutionPreset.medium,
-        );
-        await _cameraController!.initialize();
-        setState(() => _isCameraInitialized = true);
-      } else {
-        setState(() => _scannedText = "No cameras available.");
-      }
-    } catch (e) {
-      setState(() => _scannedText = "Camera error: ${e.toString()}");
-    }
+    final cameras = await availableCameras();
+    _cameraController =
+        CameraController(cameras.first, ResolutionPreset.medium);
+    await _cameraController?.initialize();
+    if (!mounted) return;
+    setState(() {});
   }
 
-  Future<void> _scanFoodLabel() async {
-    if (!_isCameraInitialized || _isScanning) return;
-
+  Future<void> _captureAndScan() async {
+    if (_cameraController == null || !_cameraController!.value.isInitialized) {
+      return;
+    }
     setState(() => _isScanning = true);
 
-    try {
-      XFile picture = await _cameraController!.takePicture();
+    final imageFile = await _cameraController!.takePicture();
+
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Image',
+          toolbarColor: Colors.green,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: CropAspectRatioPreset.original,
+          lockAspectRatio: false,
+        ),
+        IOSUiSettings(title: 'Crop Image'),
+      ],
+    );
+
+    if (croppedFile != null) {
+      final text = await _processText(croppedFile.path);
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ScanResultPage(imagePath: picture.path),
-        ),
+            builder: (context) => AnalysisPage(
+                  scannedText: text,
+                  imagePath: croppedFile.path,
+                )),
       );
-    } catch (e) {
-      setState(() => _scannedText = "Error: ${e.toString()}");
     }
-
     setState(() => _isScanning = false);
+  }
+
+  Future<String> _processText(String imagePath) async {
+    final inputImage = InputImage.fromFilePath(imagePath);
+    final textRecognizer = TextRecognizer();
+    final RecognizedText recognizedText =
+        await textRecognizer.processImage(inputImage);
+    textRecognizer.close();
+    return recognizedText.text.isNotEmpty
+        ? recognizedText.text
+        : "No text detected.";
   }
 
   @override
@@ -75,77 +94,42 @@ class _ScanningPageState extends State<ScanningPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("Scan Food Label")),
       body: Stack(
+        alignment: Alignment.center,
         children: [
-          _isCameraInitialized
+          _cameraController != null && _cameraController!.value.isInitialized
               ? CameraPreview(_cameraController!)
               : Center(child: CircularProgressIndicator()),
-          Center(
-            child: Stack(
-              children: [
-                Container(
-                  width: 300,
-                  height: 300,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.greenAccent, width: 3),
-                    borderRadius: BorderRadius.circular(12),
+          if (_isScanning)
+            Positioned.fill(
+              child: AnimatedOpacity(
+                opacity: _isScanning ? 1 : 0,
+                duration: Duration(milliseconds: 500),
+                child: Container(
+                  color: Colors.black54,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 20),
+                      Text(
+                        "Scanning...",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    ],
                   ),
                 ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: AnimatedBuilder(
-                    animation: _animation,
-                    builder: (context, child) {
-                      return Transform.translate(
-                        offset: Offset(0, _animation.value * 280),
-                        child: Container(
-                          width: 300,
-                          height: 4,
-                          color: Colors.greenAccent,
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
           Positioned(
-            bottom: 50,
-            left: MediaQuery.of(context).size.width / 2 - 30,
+            bottom: 20,
             child: FloatingActionButton(
-              onPressed: _scanFoodLabel,
-              backgroundColor: Colors.green,
-              child: Icon(Icons.camera_alt, color: Colors.white, size: 28),
+              onPressed: _isScanning ? null : _captureAndScan,
+              child: Icon(Icons.camera_alt),
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ScanResultPage extends StatelessWidget {
-  final String imagePath;
-
-  ScanResultPage({required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Scan Result")),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(imagePath),
-            SizedBox(height: 20),
-            Text("Scanned Image",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ],
-        ),
       ),
     );
   }
