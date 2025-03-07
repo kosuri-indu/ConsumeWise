@@ -80,13 +80,13 @@ User Profile:
 
     final String prompt = """
 Analyze the following food label for a user with the given profile. Identify:
-1. Any *allergens* present and highlight them in red.
-2. Any *ingredients that violate food preferences* and highlight them in red.
-3. Any *ingredients that trigger dietary restrictions* and highlight them in red.
-4. Calculate the *nutrition score* of the product.
-5. Rate the *healthiness of the product* on a scale of 1 to 10.
-6. Provide a *brief recommendation* on whether the user should consume this or avoid it.
-7. Recommend any *alternative products* that are healthier.
+1. Any allergens present and highlight them in red.
+2. Any ingredients that violate food preferences and highlight them in red.
+3. Any ingredients that trigger dietary restrictions and highlight them in red.
+4. Calculate the nutrition score of the product.
+5. Rate the healthiness of the product on a scale of 1 to 10.
+6. Provide a brief recommendation on whether the user should consume this or avoid it.
+7. Recommend any alternative products that are healthier.
 Scanned Text: "${widget.scannedText}"
 
 $userDetails
@@ -119,7 +119,7 @@ $userDetails
         // Process text to replace <font color="red"> with Markdown
         String processedText = rawText.replaceAllMapped(
           RegExp(r'<font color="red">(.*?)<\/font>'),
-          (match) => '**🔴 ${match.group(1)}**',
+          (match) => '🔴 ${match.group(1)}',
         );
 
         // Extract health score from the response (assuming it's provided in the response)
@@ -130,9 +130,6 @@ $userDetails
           analysisResult = {"generated_text": processedText};
           healthScore = extractedHealthScore;
         });
-
-        // Store the analysis result and alternatives in Firestore
-        await _storeInFirestore(processedText);
       } else {
         print("Error: ${response.statusCode} - ${response.body}");
         setState(() {
@@ -154,48 +151,10 @@ $userDetails
   int _extractHealthScore(String text) {
     // Extract the health score from the text (assuming it's provided in the response)
     // This is a placeholder implementation and should be replaced with actual extraction logic
-    final match = RegExp(r'healthiness of the product on a scale of 1 to 10: (\d+)')
-        .firstMatch(text);
+    final match =
+        RegExp(r'healthiness of the product on a scale of 1 to 10: (\d+)')
+            .firstMatch(text);
     return match != null ? int.parse(match.group(1)!) : 0;
-  }
-
-  Future<void> _storeInFirestore(String processedText) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // Store the analysis result
-      await FirebaseFirestore.instance.collection('scannedItems').add({
-        'userId': user.uid,
-        'scannedText': widget.scannedText,
-        'imagePath': widget.imagePath,
-        'analysisResult': processedText,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-
-      // Extract and store alternatives (assuming alternatives are provided in the response)
-      final alternatives = _extractAlternatives(processedText);
-      for (final alternative in alternatives) {
-        await FirebaseFirestore.instance.collection('alternatives').add({
-          'userId': user.uid,
-          'originalProduct': widget.scannedText,
-          'alternativeProduct': alternative,
-          'timestamp': FieldValue.serverTimestamp(),
-        });
-      }
-
-      print("DEBUG: Stored in Firestore");
-    }
-  }
-
-  List<String> _extractAlternatives(String text) {
-    // Extract alternatives from the text (assuming they are provided in the response)
-    // This is a placeholder implementation and should be replaced with actual extraction logic
-    final alternatives = <String>[];
-    final matches = RegExp(r'Recommend any alternative products that are healthier: (.*?)\n')
-        .allMatches(text);
-    for (final match in matches) {
-      alternatives.add(match.group(1)!);
-    }
-    return alternatives;
   }
 
   @override
@@ -294,7 +253,7 @@ $userDetails
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
-                          await _storeInFirestore(analysisResult!["generated_text"]);
+                          await _storeInFirestore();
                           print("DEBUG: Store in Store button clicked.");
                         },
                         style: ElevatedButton.styleFrom(
@@ -308,5 +267,19 @@ $userDetails
               ),
       ),
     );
+  }
+
+  Future<void> _storeInFirestore() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && analysisResult != null) {
+      await FirebaseFirestore.instance.collection('scannedItems').add({
+        'userId': user.uid,
+        'scannedText': widget.scannedText,
+        'imagePath': widget.imagePath,
+        'analysisResult': analysisResult!["generated_text"],
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      print("DEBUG: Stored in Firestore");
+    }
   }
 }
