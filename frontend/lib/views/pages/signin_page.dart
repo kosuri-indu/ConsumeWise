@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:frontend/data/colors.dart';
 import 'signup_page.dart';
 import 'home_page.dart';
 
@@ -49,7 +50,7 @@ class _SignInPageState extends State<SignInPage> {
             Container(
               height: 180,
               decoration: const BoxDecoration(
-                color: Color(0xFFCDE26E),
+                color: primaryColor,
                 borderRadius: BorderRadius.only(
                   bottomRight: Radius.circular(50),
                 ),
@@ -102,9 +103,7 @@ class _SignInPageState extends State<SignInPage> {
                         width: 250,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: _isLoading
-                              ? Colors.grey
-                              : const Color(0xFFCDE26E),
+                          color: _isLoading ? Colors.grey : primaryColor,
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Center(

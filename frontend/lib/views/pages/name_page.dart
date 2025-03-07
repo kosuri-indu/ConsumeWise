@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:frontend/data/colors.dart';
 import 'package:frontend/views/pages/gender_page.dart';
 
 class NamePage extends StatefulWidget {
@@ -44,7 +45,7 @@ class _NamePageState extends State<NamePage> {
                       icon: Icon(Icons.arrow_back, color: Colors.black),
                       onPressed: () => Navigator.pop(context),
                     ),
-                    Text("3 of 4",
+                    Text("3 of 8",
                         style: TextStyle(color: Colors.grey, fontSize: 16)),
                   ],
                 ),
@@ -68,7 +69,7 @@ class _NamePageState extends State<NamePage> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.orange),
+                              borderSide: BorderSide(color: secondaryColor),
                             ),
                           ),
                         ),
@@ -77,7 +78,7 @@ class _NamePageState extends State<NamePage> {
                       ElevatedButton(
                         onPressed: _saveNameToFirestore,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
+                          backgroundColor: secondaryColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50),
                           ),
@@ -91,8 +92,6 @@ class _NamePageState extends State<NamePage> {
                                 style: TextStyle(
                                     fontSize: 18, color: Colors.white)),
                             SizedBox(width: 10),
-                            Icon(Icons.brightness_1,
-                                color: Colors.white, size: 14),
                           ],
                         ),
                       ),

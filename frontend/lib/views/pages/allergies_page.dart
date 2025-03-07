@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:frontend/data/colors.dart';
 import 'food_sensitive_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,16 +13,16 @@ class _AllergiesPageState extends State<AllergiesPage> {
   List<String> selectedAllergies = [];
 
   final List<String> allergies = [
-    "Peanuts 🥜",
-    "Tree Nuts 🌰",
-    "Milk 🥛",
-    "Eggs 🥚",
-    "Fish 🐟",
-    "Shellfish 🦐",
-    "Soy 🌱",
-    "Wheat 🌾",
-    "Sesame 🌿",
-    "Mustard 🌭",
+    "Peanuts",
+    "Tree Nuts",
+    "Milk",
+    "Eggs",
+    "Fish",
+    "Shellfish",
+    "Soy",
+    "Wheat",
+    "Sesame",
+    "Mustard",
   ];
 
   void saveToFirebase() async {
@@ -56,15 +57,16 @@ class _AllergiesPageState extends State<AllergiesPage> {
                   icon: Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () => Navigator.pop(context),
                 ),
-                Text("2 of 4",
+                Text("6 of 8",
                     style: TextStyle(fontSize: 16, color: Colors.grey)),
               ],
             ),
           ),
           SizedBox(height: 50),
-          Text("Select any allergies you have:",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          SizedBox(height: 10),
+          Text("Select your allergies",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center),
+          SizedBox(height: 30),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -85,16 +87,16 @@ class _AllergiesPageState extends State<AllergiesPage> {
                       padding:
                           EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                       decoration: BoxDecoration(
-                        color: isSelected
-                            ? Colors.orange.shade100
-                            : Colors.grey.shade300,
+                        color: isSelected ? primaryColor : Colors.white,
                         border: Border.all(
-                            color: isSelected ? Colors.orange : Colors.black,
+                            color: isSelected ? primaryColor : Colors.black,
                             width: 2),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(allergy,
-                          style: TextStyle(fontSize: 16, color: Colors.black)),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: isSelected ? Colors.white : Colors.black)),
                     ),
                   );
                 }).toList(),
@@ -107,7 +109,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
             width: double.infinity,
             height: 50,
             decoration: BoxDecoration(
-              color: selectedAllergies.isNotEmpty ? Colors.orange : Colors.grey,
+              color: selectedAllergies.isNotEmpty ? primaryColor : Colors.grey,
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(

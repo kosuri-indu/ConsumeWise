@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:frontend/data/colors.dart';
 import 'food_consumption_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -14,16 +15,16 @@ class _FoodSensitivePageState extends State<FoodSensitivePage> {
       FirebaseFirestore.instance; // Firestore instance
 
   final List<String> triggers = [
-    "Spicy Foods 🌶️",
-    "Caffeine ☕",
-    "Alcohol 🍷",
-    "Dairy 🥛",
-    "Processed Foods 🍔",
-    "Artificial Sweeteners 🍬",
-    "Citrus Fruits 🍊",
-    "Gluten 🌾",
-    "Fried Foods 🍟",
-    "High-Fat Foods 🥩",
+    "Spicy Foods",
+    "Caffeine",
+    "Alcohol",
+    "Dairy",
+    "Processed Foods",
+    "Artificial Sweeteners",
+    "Citrus Fruits",
+    "Gluten",
+    "Fried Foods",
+    "High-Fat Foods",
   ];
 
   void _saveDataToFirebase() async {
@@ -53,7 +54,7 @@ class _FoodSensitivePageState extends State<FoodSensitivePage> {
                   icon: Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () => Navigator.pop(context),
                 ),
-                Text("3 of 4",
+                Text("7 of 8",
                     style: TextStyle(fontSize: 16, color: Colors.grey)),
               ],
             ),
@@ -61,13 +62,11 @@ class _FoodSensitivePageState extends State<FoodSensitivePage> {
           SizedBox(height: 50),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              "Trigger Ingredients & Food Sensitivities",
+            child: Text("Select your trigger ingredients",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
+              textAlign: TextAlign.center),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 30),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -88,16 +87,16 @@ class _FoodSensitivePageState extends State<FoodSensitivePage> {
                       padding:
                           EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                       decoration: BoxDecoration(
-                        color:
-                            isSelected ? Colors.orange.shade100 : Colors.white,
+                        color: isSelected ? primaryColor : Colors.white,
                         border: Border.all(
-                            color: isSelected ? Colors.orange : Colors.grey,
+                            color: isSelected ? primaryColor : Colors.black,
                             width: 2),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(trigger,
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
+                              fontSize: 16,
+                              color: isSelected ? Colors.white : Colors.black)),
                     ),
                   );
                 }).toList(),
@@ -105,32 +104,44 @@ class _FoodSensitivePageState extends State<FoodSensitivePage> {
             ),
           ),
           SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: selectedTriggers.isNotEmpty
-                ? () {
-                    _saveDataToFirebase();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FoodConsumptionPage(),
-                      ),
-                    );
-                  }
-                : null,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              elevation: 5,
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            width: double.infinity,
+            height: 50,
+            decoration: BoxDecoration(
+              color: selectedTriggers.isNotEmpty ? primaryColor : Colors.grey,
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
-            child: Text(
-              "Next",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+            child: TextButton(
+              onPressed: selectedTriggers.isNotEmpty
+                  ? () {
+                      _saveDataToFirebase();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FoodConsumptionPage(),
+                        ),
+                      );
+                    }
+                  : null,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Next",
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
+                  SizedBox(width: 10),
+                  Icon(Icons.arrow_forward, color: Colors.white),
+                ],
+              ),
             ),
           ),
           SizedBox(height: 30),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:frontend/data/colors.dart';
 import 'allergies_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -10,17 +11,17 @@ class ChronicPage extends StatefulWidget {
 
 class _ChronicPageState extends State<ChronicPage> {
   List<String> conditions = [
-    "Diabetes 🩸",
-    "Hypertension 💓",
-    "High Cholesterol 🥩🚫",
-    "PCOS/PCOD ⚖️",
-    "Celiac Disease 🌾🚫",
-    "Lactose Intolerance 🥛🚫",
-    "IBS 🤕",
-    "Kidney Disease 🫘",
-    "Thyroid Disorders 🦋",
-    "GERD 🔥",
-    "Autoimmune Disorders 🛡️"
+    "Diabetes",
+    "Hypertension",
+    "High Cholesterol",
+    "PCOS/PCOD",
+    "Celiac Disease",
+    "Lactose Intolerance",
+    "IBS",
+    "Kidney Disease",
+    "Thyroid Disorders",
+    "GERD",
+    "Autoimmune Disorders"
   ];
 
   List<String> selectedConditions = [];
@@ -62,7 +63,7 @@ class _ChronicPageState extends State<ChronicPage> {
                   icon: Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () => Navigator.pop(context),
                 ),
-                Text("1 of 4",
+                Text("5 of 8",
                     style: TextStyle(fontSize: 16, color: Colors.grey)),
               ],
             ),
@@ -73,15 +74,13 @@ class _ChronicPageState extends State<ChronicPage> {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
-                "Health Condition-Based Personalization",
+                "Select your chronic conditions",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ),
           ),
           SizedBox(height: 20),
-          Text("Select your chronic conditions:",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           SizedBox(height: 10),
           Expanded(
             child: Padding(
@@ -97,17 +96,19 @@ class _ChronicPageState extends State<ChronicPage> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                       decoration: BoxDecoration(
-                        color:
-                            isSelected ? Colors.orange.shade100 : Colors.white,
+                        color: isSelected ? primaryColor : Colors.white,
                         border: Border.all(
-                          color: isSelected ? Colors.orange : Colors.black,
+                          color: isSelected ? primaryColor : Colors.black,
                           width: 2,
                         ),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         condition,
-                        style: TextStyle(fontSize: 16, color: Colors.black),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: isSelected ? Colors.white : Colors.black,
+                        ),
                       ),
                     ),
                   );
@@ -121,8 +122,7 @@ class _ChronicPageState extends State<ChronicPage> {
             width: double.infinity,
             height: 50,
             decoration: BoxDecoration(
-              color:
-                  selectedConditions.isNotEmpty ? Colors.orange : Colors.grey,
+              color: selectedConditions.isNotEmpty ? primaryColor : Colors.grey,
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(

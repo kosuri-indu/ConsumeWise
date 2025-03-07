@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:frontend/api_service.dart';
 import 'package:frontend/widget_tree.dart';
 import 'package:firebase_core/firebase_core.dart';
 

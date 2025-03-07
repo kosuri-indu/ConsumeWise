@@ -57,7 +57,7 @@ class _WeightPageState extends State<WeightPage> {
                     onPressed: () => Navigator.pop(context),
                   ),
                   Text(
-                    "2 of 4",
+                    "2 of 8",
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ],
@@ -220,7 +220,6 @@ class _WeightPageState extends State<WeightPage> {
                         ),
                       ),
                       SizedBox(width: 8),
-                      Icon(Icons.arrow_forward, color: Colors.black, size: 18),
                     ],
                   ),
                 ),

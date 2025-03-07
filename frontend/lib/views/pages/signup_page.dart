@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore Import
+import 'package:frontend/data/colors.dart';
 import 'package:frontend/views/pages/age_page.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -68,7 +69,7 @@ class _SignUpPageState extends State<SignUpPage> {
             Container(
               height: 180,
               decoration: const BoxDecoration(
-                color: Color(0xFFCDE26E),
+                color: primaryColor,
                 borderRadius: BorderRadius.only(
                   bottomRight: Radius.circular(50),
                 ),
@@ -120,9 +121,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         width: 250,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: _isLoading
-                              ? Colors.grey
-                              : const Color(0xFFCDE26E),
+                          color: _isLoading ? Colors.grey : primaryColor,
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Center(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:frontend/data/colors.dart';
 import 'package:frontend/views/pages/chronic_page.dart';
 
 class GenderPage extends StatefulWidget {
@@ -47,7 +48,7 @@ class _GenderPageState extends State<GenderPage> {
                   icon: Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () => Navigator.pop(context),
                 ),
-                Text("4 of 4",
+                Text("4 of 8",
                     style: TextStyle(fontSize: 16, color: Colors.grey)),
               ],
             ),
@@ -73,7 +74,7 @@ class _GenderPageState extends State<GenderPage> {
                   height: 50,
                   decoration: BoxDecoration(
                     color:
-                        _selectedGender != null ? Colors.orange : Colors.grey,
+                        _selectedGender != null ? secondaryColor : Colors.grey,
                     borderRadius: BorderRadius.circular(25),
                     boxShadow: [
                       BoxShadow(
@@ -94,7 +95,6 @@ class _GenderPageState extends State<GenderPage> {
                           style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                         SizedBox(width: 10),
-                        Icon(Icons.radio_button_checked, color: Colors.white),
                       ],
                     ),
                   ),
@@ -125,9 +125,9 @@ class GenderOption extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 8, horizontal: 30),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
         decoration: BoxDecoration(
-          border: Border.all(color: isSelected ? Colors.orange : Colors.grey),
+          border: Border.all(color: isSelected ? secondaryColor : Colors.grey),
           borderRadius: BorderRadius.circular(10),
-          color: isSelected ? Colors.orange.withOpacity(0.2) : Colors.white,
+          color: isSelected ? secondaryColor.withOpacity(0.2) : Colors.white,
         ),
         child: Row(
           children: [
@@ -139,7 +139,7 @@ class GenderOption extends StatelessWidget {
               isSelected
                   ? Icons.radio_button_checked
                   : Icons.radio_button_unchecked,
-              color: isSelected ? Colors.orange : Colors.grey,
+              color: isSelected ? secondaryColor : Colors.grey,
             ),
           ],
         ),

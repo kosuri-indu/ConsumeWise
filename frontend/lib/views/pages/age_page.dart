@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/data/colors.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'weight_page.dart';
 
@@ -53,7 +54,7 @@ class _AgePageState extends State<AgePage> {
                     onPressed: () => Navigator.pop(context),
                   ),
                   const Text(
-                    "1 of 4",
+                    "1 of 8",
                     style: TextStyle(color: Colors.grey, fontSize: 16),
                   ),
                 ],
@@ -85,7 +86,7 @@ class _AgePageState extends State<AgePage> {
                       height: 90,
                       width: 150,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFCDE26E), // Green background
+                        color: primaryColor, // Green background
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
@@ -128,7 +129,7 @@ class _AgePageState extends State<AgePage> {
                 width: 280,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFCDE26E),
+                  color: primaryColor,
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [
                     BoxShadow(
@@ -150,7 +151,6 @@ class _AgePageState extends State<AgePage> {
                       ),
                     ),
                     SizedBox(width: 10),
-                    Icon(Icons.brightness_2, color: Colors.white, size: 20),
                   ],
                 ),
               ),

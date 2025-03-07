@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:frontend/data/colors.dart';
 import 'home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,16 +13,16 @@ class _FoodConsumptionPageState extends State<FoodConsumptionPage> {
   List<String> selectedDiets = [];
 
   final List<String> diets = [
-    "Vegetarian 🌿",
-    "Vegan 🥦",
-    "Pescatarian 🐟",
-    "Keto 🥩",
-    "Paleo 🦴",
-    "Mediterranean 🍅",
-    "Low-Carb 🍞🚫",
-    "High-Protein 🍗",
-    "Intermittent Fasting ⏳",
-    "DASH Diet 💓",
+    "Vegetarian",
+    "Vegan",
+    "Pescatarian",
+    "Keto",
+    "Paleo",
+    "Mediterranean",
+    "Low-Carb",
+    "High-Protein",
+    "Intermittent Fasting",
+    "DASH Diet",
   ];
 
   void toggleSelection(String diet) {
@@ -67,7 +68,7 @@ class _FoodConsumptionPageState extends State<FoodConsumptionPage> {
                   icon: Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () => Navigator.pop(context),
                 ),
-                Text("4 of 4",
+                Text("8 of 8",
                     style: TextStyle(fontSize: 16, color: Colors.grey)),
               ],
             ),
@@ -75,12 +76,11 @@ class _FoodConsumptionPageState extends State<FoodConsumptionPage> {
           SizedBox(height: 50),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Text(
-              "Food Consumption & Diet Customization",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
+            child: Text("Select your dietary preferences",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 30),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
@@ -95,18 +95,19 @@ class _FoodConsumptionPageState extends State<FoodConsumptionPage> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                       decoration: BoxDecoration(
-                        color: isSelected
-                            ? Colors.orange.shade100
-                            : Colors.grey.shade300,
+                        color: isSelected ? primaryColor : Colors.white,
                         border: Border.all(
-                          color: isSelected ? Colors.orange : Colors.black,
+                          color: isSelected ? primaryColor : Colors.black,
                           width: 2,
                         ),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         diet,
-                        style: TextStyle(fontSize: 16, color: Colors.black),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: isSelected ? Colors.white : Colors.black,
+                        ),
                       ),
                     ),
                   );
@@ -120,7 +121,7 @@ class _FoodConsumptionPageState extends State<FoodConsumptionPage> {
             width: double.infinity,
             height: 50,
             decoration: BoxDecoration(
-              color: selectedDiets.isNotEmpty ? Colors.orange : Colors.grey,
+              color: selectedDiets.isNotEmpty ? primaryColor : Colors.grey,
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(

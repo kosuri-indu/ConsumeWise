@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/data/colors.dart';
 import 'package:frontend/views/pages/signin_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       children: [
                         TextSpan(
                             text: "Scan ",
-                            style: TextStyle(color: Colors.orange)),
+                            style: TextStyle(color: secondaryColor)),
                         TextSpan(
                             text: "Smarter\n",
                             style: TextStyle(color: Colors.black)),
