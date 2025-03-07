@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
+import 'package:frontend/data/colors.dart'; // Import your colors file
 
 class TrendingPage extends StatefulWidget {
   @override
@@ -70,9 +71,9 @@ class _TrendingPageState extends State<TrendingPage> {
 
   Future<void> _generateAndSendPrompts() async {
     List<String> prompts = [
-      "**Food Recommendations**: Suggest foods for **$chronicIllness** while avoiding **$allergies** and **$foodTriggers** within a **$dietaryPreferences** diet.\n\nUse bullet points, bold headers, and markdown formatting.",
-      "**Trending Indian Recipes**: Recommend trending **homemade Indian recipes** suitable for a **$dietaryPreferences** diet. Use markdown with numbered steps.",
-      "**Exercise & Lifestyle Tips**: Provide effective **at-home exercises** and **lifestyle tips** for managing **$chronicIllness**. Highlight key exercises using **bold text** and bullet points."
+      "Suggest foods for **$chronicIllness** while avoiding **$allergies** and **$foodTriggers** within a **$dietaryPreferences** diet. Use bullet points, bold headers, and markdown formatting and only 200 words.",
+      "**Trending Indian Recipes**: Recommend trending **homemade Indian recipes** suitable for a **$dietaryPreferences** diet. Use markdown with numbered steps and only 200 words.",
+      "**Exercise & Lifestyle Tips**: Provide effective **at-home exercises** and **lifestyle tips** for managing **$chronicIllness**. Highlight key exercises using **bold text** and bullet points and only 200 words.."
     ];
 
     Map<String, String> responses = await _sendPromptsToGemini(prompts);
@@ -127,14 +128,16 @@ class _TrendingPageState extends State<TrendingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Trending Page")),
+      appBar: AppBar(
+        title: Text("Trending Page"),
+        backgroundColor: primaryColor,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: userInfo == null || geminiResponses.isEmpty
             ? Center(child: CircularProgressIndicator())
             : ListView(
                 children: [
-                  _buildUserInfo(),
                   _buildSection("Recommended Foods",
                       geminiResponses.values.elementAtOrNull(0)),
                   _buildSection("Trending Homemade Indian Recipes",
@@ -148,18 +151,24 @@ class _TrendingPageState extends State<TrendingPage> {
   }
 
   Widget _buildUserInfo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildInfoRow("Name", userInfo?['name']),
-        _buildInfoRow("Weight", userInfo?['weight']),
-        _buildInfoRow("Gender", userInfo?['gender']),
-        _buildInfoRow("Chronic Illness", chronicIllness),
-        _buildInfoRow("Allergies", allergies),
-        _buildInfoRow("Food Sensitivities", foodTriggers),
-        _buildInfoRow("Dietary Preferences", dietaryPreferences),
-        SizedBox(height: 20),
-      ],
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildInfoRow("Name", userInfo?['name']),
+            _buildInfoRow("Weight", userInfo?['weight']),
+            _buildInfoRow("Gender", userInfo?['gender']),
+            _buildInfoRow("Chronic Illness", chronicIllness),
+            _buildInfoRow("Allergies", allergies),
+            _buildInfoRow("Food Sensitivities", foodTriggers),
+            _buildInfoRow("Dietary Preferences", dietaryPreferences),
+          ],
+        ),
+      ),
     );
   }
 
@@ -177,45 +186,51 @@ class _TrendingPageState extends State<TrendingPage> {
   }
 
   Widget _buildSection(String title, String? content) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(thickness: 2, color: Colors.blueAccent),
-        SizedBox(height: 10),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            decoration: TextDecoration.underline,
-            decorationColor: Colors.blue,
-          ),
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Divider(thickness: 2, color: primaryColor),
+            SizedBox(height: 10),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: primaryColor,
+              ),
+            ),
+            SizedBox(height: 5),
+            content != null
+                ? MarkdownBody(
+                    data: content,
+                    styleSheet: MarkdownStyleSheet(
+                      h1: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor),
+                      h2: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green),
+                      p: TextStyle(fontSize: 16, color: Colors.black87),
+                      strong: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.red),
+                      em: TextStyle(
+                          fontStyle: FontStyle.italic, color: Colors.purple),
+                      blockquote: TextStyle(
+                          fontStyle: FontStyle.italic, color: Colors.grey),
+                    ),
+                  )
+                : Text("No data available"),
+            SizedBox(height: 20),
+          ],
         ),
-        SizedBox(height: 5),
-        content != null
-            ? MarkdownBody(
-                data: content,
-                styleSheet: MarkdownStyleSheet(
-                  h1: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue),
-                  h2: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green),
-                  p: TextStyle(fontSize: 16, color: Colors.black87),
-                  strong:
-                      TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
-                  em: TextStyle(
-                      fontStyle: FontStyle.italic, color: Colors.purple),
-                  blockquote: TextStyle(
-                      fontStyle: FontStyle.italic, color: Colors.grey),
-                ),
-              )
-            : Text("No data available"),
-        SizedBox(height: 20),
-      ],
+      ),
     );
   }
 }

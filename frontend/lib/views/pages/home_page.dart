@@ -1,100 +1,93 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:frontend/views/pages/trending_page.dart';
 import 'profile_page.dart';
 import 'scanning_page.dart';
+import 'package:frontend/data/colors.dart'; // Import your colors file
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _arrowAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1))
-          ..repeat(reverse: true); // Continuous up-down animation
-
-    _arrowAnimation = Tween<double>(begin: 0, end: 10).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Home", style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
+        backgroundColor: primaryColor,
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // 🏆 Title & Subtitle
-            Text(
-              "Conquer Chronicles with Care",
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 10),
-            Text(
-              "Make informed choices by scanning labels and tracking ingredients effortlessly!",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 20),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // 🏆 Title & Subtitle
+              Text(
+                "Conquer Chronicles with Care",
+                style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: primaryColor),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 10),
+              Text(
+                "Make informed choices by scanning labels and tracking ingredients effortlessly!",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
 
-            // 🖼️ Centered Image
-            Image.asset('assets/home.png',
-                height: 200, width: 200, fit: BoxFit.contain),
-            SizedBox(height: 20),
+              // 🖼️ Centered Image
+              Image.asset('assets/home.png',
+                  height: 250, width: 250, fit: BoxFit.contain),
+              SizedBox(height: 20),
 
-            // 🏆 Animated Arrow above the FAB
-            AnimatedBuilder(
-              animation: _arrowAnimation,
-              builder: (context, child) {
-                return Padding(
-                  padding: EdgeInsets.only(bottom: _arrowAnimation.value),
-                  child: Icon(Icons.keyboard_arrow_down,
-                      size: 40, color: Colors.blue),
-                );
-              },
-            ),
-          ],
+              // 🌟 Features Section
+              Column(
+                children: [
+                  _buildFeatureCard(
+                    icon: Icons.search,
+                    title: "Scan Labels",
+                    description:
+                        "Quickly scan food labels to get detailed information about ingredients and nutritional values.",
+                  ),
+                  _buildFeatureCard(
+                    icon: Icons.trending_up,
+                    title: "Trending Foods",
+                    description:
+                        "Stay updated with the latest trending foods and recipes tailored to your preferences.",
+                  ),
+                  _buildFeatureCard(
+                    icon: Icons.person,
+                    title: "Personalized Profile",
+                    description:
+                        "Manage your dietary preferences and health information in your personalized profile.",
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
-
-      // 🎯 Floating Action Button (FAB) for Scanning
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ScanningPage()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ScanningPage(
+                        userProfile: {},
+                      )));
         },
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: primaryColor,
         shape: CircleBorder(),
-        child: Icon(Icons.add, size: 32, color: Colors.white),
+        child: Icon(Icons.camera_alt, size: 32, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
-      // 🔽 Bottom Navigation Bar
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         notchMargin: 8.0,
@@ -117,6 +110,45 @@ class _HomePageState extends State<HomePage>
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ProfilePage()));
               },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFeatureCard(
+      {required IconData icon,
+      required String title,
+      required String description}) {
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.symmetric(vertical: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Icon(icon, size: 40, color: primaryColor),
+            SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: primaryColor),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    description,
+                    style: TextStyle(fontSize: 16, color: Colors.black87),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

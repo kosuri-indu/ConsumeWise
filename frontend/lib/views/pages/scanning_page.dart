@@ -3,8 +3,14 @@ import 'package:camera/camera.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'analysis_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ScanningPage extends StatefulWidget {
+  final Map<String, dynamic> userProfile; // Add userProfile parameter
+
+  ScanningPage({required this.userProfile}); // Constructor with userProfile
+
   @override
   _ScanningPageState createState() => _ScanningPageState();
 }
@@ -16,15 +22,30 @@ class _ScanningPageState extends State<ScanningPage>
   late AnimationController _animationController;
   late Animation<double> _animation;
 
+  Map<String, dynamic>? userProfile;
   @override
   void initState() {
     super.initState();
     _initializeCamera();
+    _fetchUserProfile();
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(seconds: 1),
     )..repeat(reverse: true);
     _animation = Tween<double>(begin: 0, end: 1).animate(_animationController);
+  }
+
+  Future<void> _fetchUserProfile() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userProfileSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      setState(() {
+        userProfile = userProfileSnapshot.data();
+      });
+    }
   }
 
   Future<void> _initializeCamera() async {
@@ -63,10 +84,12 @@ class _ScanningPageState extends State<ScanningPage>
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => AnalysisPage(
-                  scannedText: text,
-                  imagePath: croppedFile.path,
-                )),
+          builder: (context) => AnalysisPage(
+            scannedText: text,
+            imagePath: croppedFile.path,
+            userProfile: userProfile ?? {}, // Pass userProfile
+          ),
+        ),
       );
     }
     setState(() => _isScanning = false);

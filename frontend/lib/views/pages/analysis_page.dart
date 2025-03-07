@@ -7,8 +7,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class AnalysisPage extends StatefulWidget {
   final String scannedText;
   final String imagePath;
+  final Map<String, dynamic> userProfile;
 
-  AnalysisPage({required this.scannedText, required this.imagePath});
+  AnalysisPage({
+    required this.scannedText,
+    required this.imagePath,
+    required this.userProfile,
+  });
 
   @override
   _AnalysisPageState createState() => _AnalysisPageState();
@@ -21,14 +26,15 @@ class _AnalysisPageState extends State<AnalysisPage> {
   @override
   void initState() {
     super.initState();
-    sendToGemini();
+    WidgetsBinding.instance.addPostFrameCallback((_) => sendToGemini());
   }
 
   Future<void> sendToGemini() async {
-    print("DEBUG: Loading API Key...");
-    
+    print("DEBUG: Fetching API Key...");
+    await dotenv.load(fileName: "assets/.env");
     final String? apiKey = dotenv.env['GEMINI_API_KEY'];
-    if (apiKey == null) {
+
+    if (apiKey == null || apiKey.isEmpty) {
       print("ERROR: API Key not found.");
       setState(() {
         isLoading = false;
@@ -36,72 +42,103 @@ class _AnalysisPageState extends State<AnalysisPage> {
       });
       return;
     }
-    print("DEBUG: API Key loaded successfully.");
+    print("DEBUG: API Key Loaded.");
 
     const String apiUrl =
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+        "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent";
 
-    final Map<String, dynamic> requestBody = {
-      "prompt": {
-        "text": widget.scannedText
-      }
-    };
+    List<String> allergies =
+        List<String>.from(widget.userProfile["allergies"] ?? []);
+    String formattedAllergies =
+        allergies.isNotEmpty ? allergies.join(", ") : "None";
 
-    print("DEBUG: Sending request to Gemini API...");
-    print("DEBUG: Request Body: ${jsonEncode(requestBody)}");
+    List<String> triggers =
+        List<String>.from(widget.userProfile["triggers"] ?? []);
+    String formattedTriggers =
+        triggers.isNotEmpty ? triggers.join(", ") : "None";
 
+    List<String> dietaryPreferences =
+        List<String>.from(widget.userProfile["dietary_preferences"] ?? []);
+    String formattedDietaryPreferences =
+        dietaryPreferences.isNotEmpty ? dietaryPreferences.join(", ") : "None";
+
+    final String userDetails = """
+User Profile:
+- Age: ${widget.userProfile["age"] ?? "Unknown"}
+- Weight: ${widget.userProfile["weight"] ?? "Unknown"}
+- Gender: ${widget.userProfile["gender"] ?? "Unknown"}
+- Chronic Illness: ${widget.userProfile["chronic_conditions"] ?? "None"}
+- Allergies: $formattedAllergies
+- Food Triggers: $formattedTriggers
+- Dietary Preferences: $formattedDietaryPreferences
+""";
+
+    final String prompt = """
+Analyze the following food label for a user with the given profile. Identify:
+1. Any *allergens* present.
+2. Any *ingredients that violate food preferences*.
+3. Any *ingredients that trigger dietary restrictions*.
+4. Rate the *healthiness of the product* on a scale of 1 to 10.
+5. Provide a *brief recommendation* on whether the user should consume this or avoid it.
+
+Scanned Text: "${widget.scannedText}"
+
+$userDetails
+
+Provide dietary recommendations and insights based on the user's conditions.
+""";
+
+    print("DEBUG: Sending prompt to API...");
+    print("DEBUG: Prompt: $prompt");
     try {
       final response = await http.post(
         Uri.parse("$apiUrl?key=$apiKey"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(requestBody),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          "contents": [
+            {
+              "parts": [
+                {"text": prompt}
+              ]
+            }
+          ]
+        }),
       );
 
-      print("DEBUG: Response Status Code: ${response.statusCode}");
-      print("DEBUG: Raw Response Body: ${response.body}");
-
       if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        final List<dynamic>? candidates = responseData["candidates"];
-
-        if (candidates != null && candidates.isNotEmpty) {
-          final generatedText = candidates[0]["content"]["parts"][0]["text"];
-          print("DEBUG: Successfully received analysis from Gemini.");
-
-          setState(() {
-            analysisResult = {"generated_text": generatedText};
-            isLoading = false;
-            print("DEBUG: Updated analysisResult: $analysisResult");
-          });
-        } else {
-          print("ERROR: No valid response from Gemini.");
-          setState(() {
-            analysisResult = {"error": "No valid response from Gemini"};
-            isLoading = false;
-          });
-        }
-      } else {
-        print("ERROR: Failed to fetch analysis. HTTP ${response.statusCode}");
+        final responseData = json.decode(response.body);
         setState(() {
-          analysisResult = {
-            "error": "Failed to fetch analysis (HTTP ${response.statusCode})"
-          };
           isLoading = false;
+          analysisResult = {
+            "generated_text": responseData["candidates"]
+                    ?.first["content"]["parts"]
+                    ?.first["text"] ??
+                "No response received"
+          };
+        });
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+        setState(() {
+          isLoading = false;
+          analysisResult = {
+            "error": "API response error: ${response.statusCode}"
+          };
         });
       }
     } catch (e) {
-      print("EXCEPTION: $e");
+      print("Error fetching response: $e");
       setState(() {
-        analysisResult = {"error": "Exception: $e"};
         isLoading = false;
+        analysisResult = {"error": "Error fetching response"};
       });
     }
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Analysis Results")),
+      appBar: AppBar(title: Text("Food Analysis Results")),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: isLoading
@@ -114,10 +151,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold)),
                     SizedBox(height: 10),
-                    Text(
-                      widget.scannedText,
-                      style: TextStyle(fontSize: 16),
-                    ),
+                    Text(widget.scannedText, style: TextStyle(fontSize: 16)),
                     SizedBox(height: 20),
                     Text("Scanned Image:",
                         style: TextStyle(
@@ -125,36 +159,35 @@ class _AnalysisPageState extends State<AnalysisPage> {
                     SizedBox(height: 10),
                     Image.file(File(widget.imagePath), height: 300),
                     SizedBox(height: 20),
-
-                    /// Display Gemini Analysis Results
                     analysisResult != null
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               if (analysisResult!["generated_text"] != null)
-                                Text(
-                                  "Generated Analysis:",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              SizedBox(height: 10),
-                              if (analysisResult!["generated_text"] != null)
-                                Text(
-                                  analysisResult!["generated_text"],
-                                  style: TextStyle(fontSize: 16),
-                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Nutritionist's Analysis:",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold)),
+                                    SizedBox(height: 10),
+                                    Text(analysisResult!["generated_text"],
+                                        style: TextStyle(fontSize: 16)),
+                                  ],
+                                )
+                              else if (analysisResult!["error"] != null)
+                                Text("Error: ${analysisResult!["error"]}",
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.red)),
                             ],
                           )
                         : Text("No analysis available.",
                             style: TextStyle(fontSize: 16, color: Colors.red)),
-
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {
-                        // Handle storing the result
-                        print("DEBUG: Store in Store button clicked.");
-                      },
+                      onPressed: () =>
+                          print("DEBUG: Store in Store button clicked."),
                       child: Text("Store in Store"),
                     ),
                   ],

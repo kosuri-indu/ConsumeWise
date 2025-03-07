@@ -88,7 +88,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 100),
                   const Text('Email',
                       style: TextStyle(fontSize: 16, color: Colors.black)),
                   const SizedBox(height: 8),

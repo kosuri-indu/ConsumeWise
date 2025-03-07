@@ -14,7 +14,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
 
   final List<String> allergies = [
     "Peanuts",
-    "Tree Nuts",
+    "Nuts",
     "Milk",
     "Eggs",
     "Fish",

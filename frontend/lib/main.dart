@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:frontend/widget_tree.dart';
+import 'package:frontend/views/pages/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: WidgetTree(),
+      home: SplashScreen(),
     );
   }
 }
