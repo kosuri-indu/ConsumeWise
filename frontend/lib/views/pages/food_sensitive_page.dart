@@ -25,6 +25,7 @@ class _FoodSensitivePageState extends State<FoodSensitivePage> {
     "Gluten",
     "Fried Foods",
     "High-Fat Foods",
+    "None",
   ];
 
   void _saveDataToFirebase() async {
@@ -63,8 +64,8 @@ class _FoodSensitivePageState extends State<FoodSensitivePage> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Text("Select your trigger ingredients",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center),
           ),
           SizedBox(height: 30),
           Expanded(

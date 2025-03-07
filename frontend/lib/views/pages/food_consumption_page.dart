@@ -23,6 +23,7 @@ class _FoodConsumptionPageState extends State<FoodConsumptionPage> {
     "High-Protein",
     "Intermittent Fasting",
     "DASH Diet",
+    "None",
   ];
 
   void toggleSelection(String diet) {
