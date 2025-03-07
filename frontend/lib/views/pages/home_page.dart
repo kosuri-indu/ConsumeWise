@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'profile_page.dart';
+import 'scanning_page.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -14,27 +15,16 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        ProfilePage()), // Navigate to Profile Page
+                MaterialPageRoute(builder: (context) => ProfilePage()),
               );
             },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            greetingSection(),
-            SizedBox(height: 20),
-            homeCard(Icons.restaurant, "Daily Intake", "1200 / 2000 kcal"),
-            homeCard(Icons.store, "My Store", "Check your items"),
-            homeCard(Icons.warning_amber, "Expiring Soon",
-                "Track items nearing expiry"),
-            homeCard(Icons.auto_awesome, "AI Suggestions",
-                "Get personalized recommendations"),
-          ],
+      body: Center(
+        child: Text(
+          "Welcome to Your Dashboard",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -42,11 +32,12 @@ class HomePage extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => HomePage()), // Navigate to Scanning Page
+            MaterialPageRoute(builder: (context) => ScanningPage()),
           );
         },
-        child: Icon(Icons.camera_alt),
+        backgroundColor: Theme.of(context).primaryColor,
+        shape: CircleBorder(),
+        child: Icon(Icons.add, size: 32, color: Colors.white),
       ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
@@ -60,53 +51,24 @@ class HomePage extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(Icons.store),
-              onPressed: () {}, // Future Store Page
+              onPressed: () {},
             ),
             SizedBox(width: 40), // Space for Floating Button
             IconButton(
               icon: Icon(Icons.bar_chart),
-              onPressed: () {}, // Future Insights Page
+              onPressed: () {},
             ),
             IconButton(
               icon: Icon(Icons.settings),
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ProfilePage()), // Navigate to Profile Page
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
                 );
               },
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget greetingSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("👋 Good Morning!",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        Text("📅 Today: Mar 5 | 🌤  27°C",
-            style: TextStyle(fontSize: 14, color: Colors.grey)),
-      ],
-    );
-  }
-
-  Widget homeCard(IconData icon, String title, String subtitle) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        leading: Icon(icon, color: Colors.blueAccent),
-        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle, style: TextStyle(color: Colors.grey)),
-        trailing: Icon(Icons.arrow_forward_ios, size: 18),
-        onTap: () {
-          // Placeholder for future navigation
-        },
       ),
     );
   }
