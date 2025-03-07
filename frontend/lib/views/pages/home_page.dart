@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/views/pages/trending_page.dart';
 import 'profile_page.dart';
 import 'scanning_page.dart';
 
@@ -9,17 +10,6 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Home", style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
-              );
-            },
-          ),
-        ],
       ),
       body: Center(
         child: Text(
@@ -47,19 +37,24 @@ class HomePage extends StatelessWidget {
           children: [
             IconButton(
               icon: Icon(Icons.home),
-              onPressed: () {},
+              onPressed: () {}, // Home Page (Already on it)
             ),
             IconButton(
               icon: Icon(Icons.store),
-              onPressed: () {},
+              onPressed: () {}, // Store Page
             ),
             SizedBox(width: 40), // Space for Floating Button
             IconButton(
-              icon: Icon(Icons.bar_chart),
-              onPressed: () {},
+              icon: Icon(Icons.trending_up),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => TrendingPage()),
+                );
+              },
             ),
             IconButton(
-              icon: Icon(Icons.settings),
+              icon: Icon(Icons.person),
               onPressed: () {
                 Navigator.push(
                   context,

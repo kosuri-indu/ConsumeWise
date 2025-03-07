@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AnalysisPage extends StatefulWidget {
   final String scannedText;
@@ -28,6 +26,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
 
   Future<void> sendToGemini() async {
     print("DEBUG: Loading API Key...");
+    
     final String? apiKey = dotenv.env['GEMINI_API_KEY'];
     if (apiKey == null) {
       print("ERROR: API Key not found.");
@@ -43,13 +42,9 @@ class _AnalysisPageState extends State<AnalysisPage> {
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
     final Map<String, dynamic> requestBody = {
-      "contents": [
-        {
-          "parts": [
-            {"text": widget.scannedText}
-          ]
-        }
-      ]
+      "prompt": {
+        "text": widget.scannedText
+      }
     };
 
     print("DEBUG: Sending request to Gemini API...");
