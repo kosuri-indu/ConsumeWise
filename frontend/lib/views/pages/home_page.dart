@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/views/pages/trending_page.dart';
 import 'profile_page.dart';
 import 'scanning_page.dart';
+import 'store_page.dart'; // Import StorePage
 import 'package:frontend/data/colors.dart'; // Import your colors file
 
 class HomePage extends StatefulWidget {
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               // 🏆 Title & Subtitle
               Text(
-                "Conquer Chronicles with Care",
+                "Conquer Chronicles \nwith Care",
                 style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 10),
               Text(
-                "Make informed choices by scanning labels and tracking ingredients effortlessly!",
+                "Make informed choices by scanning labels, tracking ingredients and get alternative effortlessly!",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
               ),
@@ -46,30 +47,6 @@ class _HomePageState extends State<HomePage> {
               Image.asset('assets/home.png',
                   height: 250, width: 250, fit: BoxFit.contain),
               SizedBox(height: 20),
-
-              // 🌟 Features Section
-              Column(
-                children: [
-                  _buildFeatureCard(
-                    icon: Icons.search,
-                    title: "Scan Labels",
-                    description:
-                        "Quickly scan food labels to get detailed information about ingredients and nutritional values.",
-                  ),
-                  _buildFeatureCard(
-                    icon: Icons.trending_up,
-                    title: "Trending Foods",
-                    description:
-                        "Stay updated with the latest trending foods and recipes tailored to your preferences.",
-                  ),
-                  _buildFeatureCard(
-                    icon: Icons.person,
-                    title: "Personalized Profile",
-                    description:
-                        "Manage your dietary preferences and health information in your personalized profile.",
-                  ),
-                ],
-              ),
             ],
           ),
         ),
@@ -95,7 +72,13 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(icon: Icon(Icons.home), onPressed: () {}),
-            IconButton(icon: Icon(Icons.store), onPressed: () {}),
+            IconButton(
+              icon: Icon(Icons.store),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => StorePage()));
+              },
+            ),
             SizedBox(width: 40), // Space for Floating Button
             IconButton(
               icon: Icon(Icons.trending_up),

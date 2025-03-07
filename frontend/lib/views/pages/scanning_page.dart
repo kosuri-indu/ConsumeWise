@@ -5,6 +5,7 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 import 'analysis_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:frontend/data/colors.dart'; // Import your colors file
 
 class ScanningPage extends StatefulWidget {
   final Map<String, dynamic> userProfile; // Add userProfile parameter
@@ -23,6 +24,7 @@ class _ScanningPageState extends State<ScanningPage>
   late Animation<double> _animation;
 
   Map<String, dynamic>? userProfile;
+
   @override
   void initState() {
     super.initState();
@@ -70,7 +72,7 @@ class _ScanningPageState extends State<ScanningPage>
       uiSettings: [
         AndroidUiSettings(
           toolbarTitle: 'Crop Image',
-          toolbarColor: Colors.green,
+          toolbarColor: primaryColor,
           toolbarWidgetColor: Colors.white,
           initAspectRatio: CropAspectRatioPreset.original,
           lockAspectRatio: false,
@@ -116,7 +118,10 @@ class _ScanningPageState extends State<ScanningPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Scan Food Label")),
+      appBar: AppBar(
+        title: Text("Scan Food Label"),
+        backgroundColor: primaryColor,
+      ),
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -133,7 +138,9 @@ class _ScanningPageState extends State<ScanningPage>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircularProgressIndicator(),
+                      CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                      ),
                       SizedBox(height: 20),
                       Text(
                         "Scanning...",
@@ -148,7 +155,8 @@ class _ScanningPageState extends State<ScanningPage>
             bottom: 20,
             child: FloatingActionButton(
               onPressed: _isScanning ? null : _captureAndScan,
-              child: Icon(Icons.camera_alt),
+              backgroundColor: primaryColor,
+              child: Icon(Icons.camera_alt, color: Colors.white),
             ),
           ),
         ],
