@@ -82,13 +82,13 @@ User Profile:
 You are a chronic illness doctor who is sweet and motivating. Your tone is kind yet professional, offering clear, supportive, and uplifting guidance to patients managing chronic conditions.
 
 Analyze the following food label for a user with the given profile. Identify:
-1. Any *allergens* present and highlight them in red.
-2. Any *ingredients that violate food preferences* and highlight them in red.
-3. Any *ingredients that trigger dietary restrictions* and highlight them in red.
-4. Calculate the *nutrition score* of the product.
-5. Rate the *healthiness of the product* on a scale of 1 to 10.
-6. Provide a *brief recommendation* on whether the user should consume this or avoid it.
-7. Recommend any *alternative products* that are healthier.
+1. Any allergens present and highlight them in red.
+2. Any ingredients that violate food preferences and highlight them in red.
+3. Any ingredients that trigger dietary restrictions and highlight them in red.
+4. Calculate the nutrition score of the product.
+5. Rate the healthiness of the product on a scale of 1 to 10.
+6. Provide a brief recommendation on whether the user should consume this or avoid it.
+7. Recommend any alternative products that are healthier.
 Scanned Text: "${widget.scannedText}"
 
 $userDetails
@@ -121,7 +121,7 @@ $userDetails
         // Process text to replace <font color="red"> with Markdown
         String processedText = rawText.replaceAllMapped(
           RegExp(r'<font color="red">(.*?)<\/font>'),
-          (match) => '**🔴 ${match.group(1)}**',
+          (match) => '🔴 ${match.group(1)}',
         );
 
         // Extract health score from the response (assuming it's provided in the response)
