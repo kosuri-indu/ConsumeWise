@@ -71,7 +71,7 @@ class _TrendingPageState extends State<TrendingPage> {
 
   Future<void> _generateAndSendPrompts() async {
     List<String> prompts = [
-      "Suggest foods for **$chronicIllness** while avoiding **$allergies** and **$foodTriggers** within a **$dietaryPreferences** diet. Use bullet points, bold headers, and markdown formatting and only 200 words.",
+      "You are a chronic illness doctor who is sweet and motivating. Your tone is kind yet professional, offering clear, supportive, and uplifting guidance to patients managing chronic conditions. Suggest foods for **$chronicIllness** while avoiding **$allergies** and **$foodTriggers** within a **$dietaryPreferences** diet. Use bullet points, bold headers, and markdown formatting and only 200 words.",
       "Recommend trending **homemade Indian recipes** suitable for a **$dietaryPreferences** diet. Use markdown with numbered steps and only 200 words.",
       "Provide effective **at-home exercises** and **lifestyle tips** for managing **$chronicIllness**. Highlight key exercises using **bold text** and bullet points and only 200 words.."
     ];

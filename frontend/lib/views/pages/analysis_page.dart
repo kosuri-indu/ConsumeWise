@@ -79,6 +79,8 @@ User Profile:
 """;
 
     final String prompt = """
+You are a chronic illness doctor who is sweet and motivating. Your tone is kind yet professional, offering clear, supportive, and uplifting guidance to patients managing chronic conditions.
+
 Analyze the following food label for a user with the given profile. Identify:
 1. Any *allergens* present and highlight them in red.
 2. Any *ingredients that violate food preferences* and highlight them in red.
@@ -149,12 +151,32 @@ $userDetails
   }
 
   int _extractHealthScore(String text) {
-    // Extract the health score from the text (assuming it's provided in the response)
-    // This is a placeholder implementation and should be replaced with actual extraction logic
+    // Log the response text for debugging
+    print("DEBUG: Response Text: $text");
+
+    // Extract the number before "/10" anywhere in the text after "Healthiness Rating (1-10):"
     final match =
-        RegExp(r'healthiness of the product on a scale of 1 to 10: (\d+)')
-            .firstMatch(text);
-    return match != null ? int.parse(match.group(1)!) : 0;
+        RegExp(r'Healthiness Rating\s*\(1-10\):\s*(\d+)\/10').firstMatch(text);
+
+    // Log the match result for debugging
+    if (match != null && match.group(1) != null) {
+      print("DEBUG: Extracted Health Score: ${match.group(1)}");
+      return int.tryParse(match.group(1)!) ?? 0;
+    } else {
+      print(
+          "DEBUG: No health score found. Searching for alternative formats...");
+
+      // Alternative search (looks for any number followed by "/10" anywhere in text)
+      final altMatch = RegExp(r'(\d+)\/10').firstMatch(text);
+      if (altMatch != null && altMatch.group(1) != null) {
+        print(
+            "DEBUG: Extracted Health Score from alternative format: ${altMatch.group(1)}");
+        return int.tryParse(altMatch.group(1)!) ?? 0;
+      }
+    }
+
+    print("DEBUG: No health score found. Defaulting to 0.");
+    return 0;
   }
 
   @override
@@ -193,14 +215,14 @@ $userDetails
                         Image.asset(
                           'assets/yellow.png',
                           height: 50,
-                          color: healthScore > 3 && healthScore <= 7
+                          color: healthScore > 3 && healthScore <= 6
                               ? Colors.yellow
                               : Colors.grey,
                         ),
                         Image.asset(
                           'assets/green.png',
                           height: 50,
-                          color: healthScore > 7 ? Colors.green : Colors.grey,
+                          color: healthScore >= 7 ? Colors.green : Colors.grey,
                         ),
                       ],
                     ),
@@ -249,19 +271,7 @@ $userDetails
                         : Text("No analysis available.",
                             style: TextStyle(fontSize: 16, color: Colors.red)),
                     SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await _storeInFirestore();
-                          print("DEBUG: Store in Store button clicked.");
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: secondaryColor,
-                        ),
-                        child: Text("Store in Store"),
-                      ),
-                    ),
+                    
                   ],
                 ),
               ),

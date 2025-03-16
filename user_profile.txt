@@ -1,0 +1,8 @@
+Name: John Doe
+Age: 35
+Weight: 75kg
+Gender: Male
+Chronic Illness: Diabetes
+Allergies: Peanuts, Shellfish
+Food Triggers: Caffeine, Fried Foods
+Dietary Preferences: Low-Carb, High-Protein
